@@ -81,7 +81,7 @@ Terminal 1 — backend:
 
 ```bash
 source .venv/bin/activate
-python3 -m uvicorn app.main:create_app --factory --reload
+python3 -m uvicorn app.main:create_app --factory --reload --reload-dir app
 ```
 
 Terminal 2 — frontend:
@@ -165,6 +165,8 @@ have been selected.
 - `docs/api.md` defines the application contract.
 - `docs/security.md` describes threats, controls, and remaining risks.
 - `docs/testing.md` describes the test strategy.
+- `docs/test-results/v3-enterprise-manual-validation.md` records the first local
+  end-to-end validation and its screenshots.
 - `docs/runbook.md` explains operation and recovery.
 
 ## Version

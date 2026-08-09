@@ -34,7 +34,7 @@ Terminal 1:
 
 ```bash
 source .venv/bin/activate
-python3 -m uvicorn app.main:create_app --factory --reload
+python3 -m uvicorn app.main:create_app --factory --reload --reload-dir app
 ```
 
 Normal startup logs include `document_index_initializing` followed by
