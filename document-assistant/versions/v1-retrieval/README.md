@@ -87,6 +87,11 @@ Production deployment
 Advanced observability
 These capabilities can be introduced incrementally in future versions.
 
+Manual Validation Evidence
+
+The V1 retrieval tests, screenshots, and findings are recorded in
+`docs/test-results/v1-retrieval-manual-validation.md`.
+
 Project Structure
 version-1/
 ├── .gitignore
@@ -104,6 +109,9 @@ version-1/
     │
     ├── decisions/
     │   └── ADR-001-v1-architecture.md
+    │
+    ├── test-results/
+    │   └── v1-retrieval-manual-validation.md
     │
     └── runbook.md
 Version
