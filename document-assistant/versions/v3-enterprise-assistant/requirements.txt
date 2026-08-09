@@ -1,0 +1,8 @@
+fastapi>=0.115,<1
+httpx>=0.27,<1
+openai>=2,<3
+pydantic-settings>=2.6,<3
+pypdf>=6,<7
+scikit-learn>=1.6,<2
+streamlit>=1.50,<2
+uvicorn[standard]>=0.30,<1

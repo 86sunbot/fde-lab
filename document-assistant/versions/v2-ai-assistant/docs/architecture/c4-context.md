@@ -2,66 +2,48 @@
 
 ## Purpose
 
-This document describes the high-level context of Document Assistant V1.
-
-## System Overview
-
-Document Assistant V1 allows a user to ask questions about a PDF document.
-
-The application searches the document and returns the most relevant section of text.
+Document Assistant V2 lets a user ask a question about a local PDF and receive
+an AI-generated answer grounded in retrieved document evidence.
 
 ```text
-┌──────────────┐
-│     User     │
-└──────┬───────┘
-       │
-       │ Question
-       ▼
-┌────────────────────────┐
-│   Document Assistant   │
-│                        │
-│  Retrieval-based       │
-│  Document Search       │
-└────────────┬───────────┘
-             │
-             │ Reads
-             ▼
-      ┌──────────────┐
-      │ PDF Document │
-      └──────────────┘
+┌──────────┐       question / answer       ┌─────────────────────────┐
+│   User   │ ◄───────────────────────────► │ AI Document Assistant V2│
+└──────────┘                               └───────────┬─────────────┘
+                                                     │
+                                  reads              │ API requests
+                            ┌────────────────┐        │
+                            │ Local PDF file │        ▼
+                            └────────────────┘   ┌────────────┐
+                                                 │ OpenAI API │
+                                                 └────────────┘
 ```
 
-## User
+## People and Systems
 
-The user:
+### User
 
-- Interacts with the Streamlit application
-- Asks questions about the document
-- Receives the most relevant document content
+- Asks questions through Streamlit
+- Receives a concise generated answer
+- Inspects the retrieved supporting sources
 
-## Document Assistant
+### AI Document Assistant V2
 
-The Document Assistant:
+- Extracts and chunks PDF text
+- Creates and stores embedding vectors in memory
+- retrieves semantically relevant chunks
+- Builds a grounded prompt
+- Requests an LLM-generated answer
 
-- Reads the PDF
-- Extracts text
-- Splits text into chunks
-- Performs TF-IDF vectorization
-- Calculates cosine similarity
-- Finds the most relevant chunk
-- Displays the result
+### OpenAI API
 
-## External Systems
+- Converts text into embedding vectors
+- Generates an answer from the supplied prompt and evidence
 
-V1 does not use any external AI system.
+### Local PDF
 
-There is:
+- Is the sole knowledge source for answers
 
-- No LLM
-- No OpenAI API
-- No vector database
-- No external AI service
+## Boundary
 
-## Scope
-
-V1 is a local learning prototype designed to demonstrate a basic document retrieval workflow.
+V2 is a local learning application. The OpenAI API is external, but there is no
+application API, authentication layer, managed database, or deployment platform.

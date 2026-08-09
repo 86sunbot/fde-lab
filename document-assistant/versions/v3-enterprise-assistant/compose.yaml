@@ -1,0 +1,27 @@
+services:
+  api:
+    build: .
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY}
+      APP_API_KEY: ${APP_API_KEY:?Set APP_API_KEY}
+      ENVIRONMENT: production
+      DOCUMENT_PATH: document.pdf
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: .
+    command:
+      - streamlit
+      - run
+      - frontend/streamlit_app.py
+      - --server.address=0.0.0.0
+      - --server.port=8501
+    environment:
+      APP_API_KEY: ${APP_API_KEY:?Set APP_API_KEY}
+      BACKEND_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8501:8501"

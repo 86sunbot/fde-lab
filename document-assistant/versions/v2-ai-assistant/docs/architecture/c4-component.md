@@ -1,93 +1,69 @@
 # C4 Level 3 — Component View
 
-## Purpose
-
-This document describes the logical components inside Document Assistant V1.
-
 ## Component Flow
 
 ```text
-PDF Document
-     ↓
-PDF Reader
-     ↓
-Text Extraction
-     ↓
-Text Chunker
-     ↓
-Document Chunks
-     ↓
-TF-IDF Vectorizer
-     ↑
-User Question
-     ↓
-Cosine Similarity
-     ↓
-Similarity Ranking
-     ↓
-Best Matching Chunk
-     ↓
-Streamlit Output
+document.pdf
+    ↓
+PDF Reader → Text Chunker
+                 ↓
+         Embedding Creator ──────► OpenAI Embeddings API
+                 ↓
+         In-Memory Vector Store
+                 ↑
+User Question → Question Embedding
+                 ↓
+        Cosine Similarity Retriever
+                 ↓ top 3 chunks
+           Grounded Prompt Builder
+                 ↓
+          Answer Generator ───────► OpenAI Responses API
+                 ↓
+      Answer + Supporting Sources
 ```
 
 ## Components
 
-### Streamlit User Interface
+### Streamlit UI
 
-Responsibilities:
-
-- Display the application
-- Accept the user's question
-- Display the retrieved result
+Accepts a question and displays status, answer, citations, retrieved chunks, and
+similarity scores.
 
 ### PDF Reader
 
-Responsibilities:
-
-- Read the PDF document
-- Extract text from PDF pages
+Extracts text from every readable PDF page and preserves page markers.
 
 ### Text Chunker
 
-Responsibilities:
+Reuses V1's fixed-size, overlapping character chunks. Keeping this unchanged
+isolates the effect of the new semantic retrieval method.
 
-- Divide extracted text into smaller searchable sections
+### Embedding Creator
 
-### TF-IDF Vectorizer
+Uses `text-embedding-3-small` to represent chunks and questions as numeric
+vectors. Document embeddings are cached to avoid repeating them on every UI
+interaction.
 
-Responsibilities:
+### In-Memory Vector Store
 
-- Convert document chunks into numerical vectors
-- Convert the user question into the same vector representation
+Keeps each chunk beside its embedding. It is a Python dictionary, not an
+external vector database.
 
-### Similarity Calculator
+### Semantic Retriever
 
-Technique:
+Calculates cosine similarity and returns the three highest-ranked chunks.
 
-Cosine Similarity
+### Prompt Builder
 
-Responsibilities:
+Labels retrieved chunks as sources and instructs the model to answer only from
+those sources, cite them, and admit when the answer is absent.
 
-- Compare the user question with each document chunk
-- Generate similarity scores
+### Answer Generator
 
-### Retriever
+Uses the OpenAI Responses API with `gpt-5.6-terra` to generate the final answer.
 
-Responsibilities:
+## V1-to-V2 Continuity
 
-- Rank document chunks
-- Select the highest-scoring chunk
-
-### Response Renderer
-
-Responsibilities:
-
-- Display the retrieved document text through Streamlit
-
-## Important V1 Boundary
-
-V1 performs retrieval.
-
-It does not generate new answers.
-
-Therefore, V1 is not a RAG system and does not use Generative AI.
+PDF reading, chunking, cosine similarity, and Streamlit remain. TF-IDF vectors
+are replaced by embeddings; top-k evidence, prompt construction, and LLM
+generation are added.

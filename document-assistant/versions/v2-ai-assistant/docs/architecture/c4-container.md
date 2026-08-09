@@ -1,82 +1,49 @@
 # C4 Level 2 — Container View
 
-## Purpose
-
-This document describes the main technical building blocks of Document Assistant V1.
-
 ## Architecture
 
 ```text
-┌──────────────┐
-│     User     │
-└──────┬───────┘
-       │
-       ▼
-┌─────────────────────┐
-│   Streamlit App     │
-│      app.py         │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ Document Processing │
-│                     │
-│ PDF → Text          │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ Retrieval Processing│
-│                     │
-│ Chunking            │
-│ TF-IDF              │
-│ Cosine Similarity   │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ Most Relevant Chunk │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ Streamlit Output    │
-└─────────────────────┘
+┌──────────┐
+│ Browser  │
+└────┬─────┘
+     │ local HTTP
+     ▼
+┌─────────────────────────────────────────────────────┐
+│ Streamlit application (Python / app.py)             │
+│                                                     │
+│ PDF processing → chunking → in-memory vector store  │
+│      → semantic retrieval → prompt → answer         │
+└──────────────┬──────────────────────┬───────────────┘
+               │ reads                │ HTTPS API calls
+               ▼                      ▼
+        ┌─────────────┐        ┌────────────┐
+        │ document.pdf│        │ OpenAI API │
+        └─────────────┘        └────────────┘
 ```
 
-## Streamlit Application
+## Containers
+
+### Streamlit Application
 
 Responsibilities:
 
-- Provide the user interface
-- Accept the user's question
-- Coordinate document processing
-- Display the retrieved result
+- Render the local browser interface
+- Coordinate ingestion, retrieval, prompting, and generation
+- Cache document embeddings during local execution
+- Display the answer and retrieved evidence
 
-## Document Processing
+All application responsibilities deliberately remain in one Python process so
+the V2 RAG flow is easy to trace.
 
-Responsibilities:
+### Local PDF
 
-- Read the PDF
-- Extract textual content
-- Prepare the document for retrieval
+The single source document. It must contain extractable text.
 
-## Retrieval Processing
+### OpenAI API
 
-Responsibilities:
+An external service used for embedding creation and LLM generation.
 
-- Split text into chunks
-- Create TF-IDF vectors
-- Compare the user question with document chunks
-- Calculate cosine similarity
-- Identify the highest-scoring chunk
+## Deliberate Omissions
 
-## Result
-
-The most relevant document chunk is displayed to the user.
-
-## V1 Design Decision
-
-All functionality is intentionally kept inside a simple local Python application.
-
-Separate APIs, databases, microservices, and AI models are not required for V1.
+There is no separate backend API, database service, authentication service,
+worker, or telemetry platform. Those containers are not justified until V3.
