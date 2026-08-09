@@ -122,6 +122,8 @@ Deferred to Version 3:
 
 - `docs/architecture/` describes the current V2 architecture.
 - `docs/decisions/` records why the architecture evolved.
+- `docs/test-results/v2-rag-manual-validation.md` records the first real manual
+  semantic-retrieval and grounding validation.
 - `docs/runbook.md` explains how to operate and troubleshoot the app.
 - `VERSION` contains the version identifier.
 
