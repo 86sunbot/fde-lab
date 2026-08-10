@@ -1,0 +1,12 @@
+Ruff:
+All checks passed!
+
+Pytest:
+................................                                         [100%]
+32 passed in 2.02s
+
+PDF validation:
+Validated PDF chunks: 10
+
+Compose validation:
+Compose YAML parsed

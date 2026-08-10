@@ -15,11 +15,14 @@
 - Key comparison uses a constant-time function.
 - Raw keys are never placed in logs or limiter identifiers.
 - Questions have length and non-whitespace validation.
+- The configured PDF has explicit byte and page limits before extraction.
 - Rate and concurrency limits protect expensive operations.
 - External calls have timeouts and bounded retries.
 - Containers run as a non-root user.
 - `.env` and local caches are excluded from Git and Docker build context.
 - Logs omit request bodies, prompts, source text, answers, and credentials.
+- Retrieval traces contain only chunk numbers, scores, counts, sufficiency, and
+  timing.
 - Retrieved document text is marked as untrusted content in the RAG prompt.
 
 ## Remaining Risks

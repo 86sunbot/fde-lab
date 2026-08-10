@@ -15,6 +15,7 @@ RUN python -m pip install --upgrade pip && \
 COPY --chown=app:app app ./app
 COPY --chown=app:app frontend ./frontend
 COPY --chown=app:app document.pdf ./document.pdf
+RUN mkdir -p /app/.data && chown app:app /app/.data
 
 USER app
 

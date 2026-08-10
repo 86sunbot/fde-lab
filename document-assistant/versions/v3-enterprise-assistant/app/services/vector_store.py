@@ -1,5 +1,9 @@
+import json
+import os
 from collections.abc import Sequence
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -13,7 +17,9 @@ class SearchResult:
 
 
 class InMemoryVectorStore:
-    """Small, transparent vector store inherited from V2."""
+    """Transparent in-memory search with a local JSON persistence snapshot."""
+
+    SCHEMA_VERSION = 1
 
     def __init__(self) -> None:
         self._chunks: list[str] = []
@@ -41,6 +47,42 @@ class InMemoryVectorStore:
 
         self._chunks = list(chunks)
         self._embeddings = [list(embedding) for embedding in embeddings]
+
+    def restore(self, path: Path, index_signature: str) -> bool:
+        """Restore a compatible snapshot; return False for a miss or corrupt cache."""
+        if not path.is_file():
+            return False
+
+        try:
+            payload: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+            if payload.get("schema_version") != self.SCHEMA_VERSION:
+                return False
+            if payload.get("index_signature") != index_signature:
+                return False
+            self.replace(payload["chunks"], payload["embeddings"])
+        except (KeyError, TypeError, ValueError, OSError, json.JSONDecodeError):
+            return False
+
+        return True
+
+    def persist(self, path: Path, index_signature: str) -> None:
+        """Atomically persist the current index so restarts can avoid re-embedding."""
+        if not self.ready:
+            raise RuntimeError("the vector store has not been initialized")
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary_path = path.with_suffix(f"{path.suffix}.tmp")
+        payload = {
+            "schema_version": self.SCHEMA_VERSION,
+            "index_signature": index_signature,
+            "chunks": self._chunks,
+            "embeddings": self._embeddings,
+        }
+        temporary_path.write_text(
+            json.dumps(payload, separators=(",", ":")),
+            encoding="utf-8",
+        )
+        os.replace(temporary_path, path)
 
     def search(
         self,

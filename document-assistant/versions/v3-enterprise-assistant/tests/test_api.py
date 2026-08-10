@@ -62,7 +62,7 @@ def test_health_and_readiness_are_public(test_settings: Settings) -> None:
         readiness = client.get("/ready")
 
     assert health.status_code == 200
-    assert health.json() == {"status": "ok", "version": "3.0.0"}
+    assert health.json() == {"status": "ok", "version": "3.1.0"}
     assert readiness.status_code == 200
     assert readiness.json()["indexed_chunks"] == 2
 
@@ -101,6 +101,22 @@ def test_question_is_validated_and_answered(test_settings: Settings) -> None:
     assert valid.json()["sources"][0]["chunk_number"] == 1
     assert valid.headers["X-Request-ID"] == valid.json()["request_id"]
     assert assistant.last_question == "What does the document say?"
+
+
+def test_question_rejects_unknown_fields(test_settings: Settings) -> None:
+    app = create_app(test_settings, assistant=FakeAssistant())
+
+    with TestClient(app) as client:
+        response = client.post(
+            "/v1/questions",
+            headers=auth_headers(test_settings),
+            json={
+                "question": "What does the document say?",
+                "unexpected": "silently accepting this would weaken the contract",
+            },
+        )
+
+    assert response.status_code == 422
 
 
 def test_rate_limit_returns_retry_information(test_settings: Settings) -> None:

@@ -1,7 +1,11 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
-class QuestionRequest(BaseModel):
+class APIModel(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+
+class QuestionRequest(APIModel):
     question: str = Field(min_length=3, max_length=2_000)
 
     @field_validator("question")
@@ -13,31 +17,31 @@ class QuestionRequest(BaseModel):
         return normalized
 
 
-class SourceResponse(BaseModel):
+class SourceResponse(APIModel):
     source_number: int
     chunk_number: int
     similarity: float
     text: str
 
 
-class QuestionResponse(BaseModel):
+class QuestionResponse(APIModel):
     request_id: str
     answer: str
     sources: list[SourceResponse]
 
 
-class HealthResponse(BaseModel):
+class HealthResponse(APIModel):
     status: str
     version: str
 
 
-class ReadinessResponse(BaseModel):
+class ReadinessResponse(APIModel):
     status: str
     document: str
     indexed_chunks: int
 
 
-class MetricsResponse(BaseModel):
+class MetricsResponse(APIModel):
     total_requests: int
     question_requests: int
     error_responses: int

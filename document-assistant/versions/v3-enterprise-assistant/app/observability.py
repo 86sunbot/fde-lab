@@ -18,6 +18,13 @@ class JsonFormatter(logging.Formatter):
         "duration_ms",
         "document",
         "indexed_chunks",
+        "index_path",
+        "candidate_count",
+        "candidate_chunks",
+        "selected_chunks",
+        "similarity_scores",
+        "evidence_sufficient",
+        "retrieval_duration_ms",
     )
 
     def format(self, record: logging.LogRecord) -> str:

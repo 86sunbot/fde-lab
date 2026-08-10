@@ -17,7 +17,7 @@ Public liveness check. A successful response means the HTTP process is running.
 ```json
 {
   "status": "ok",
-  "version": "3.0.0"
+  "version": "3.1.0"
 }
 ```
 

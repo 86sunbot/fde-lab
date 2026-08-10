@@ -6,6 +6,11 @@ services:
       APP_API_KEY: ${APP_API_KEY:?Set APP_API_KEY}
       ENVIRONMENT: production
       DOCUMENT_PATH: document.pdf
+      VECTOR_STORE_PATH: .data/document-index.json
+      MAX_DOCUMENT_BYTES: 20000000
+      MAX_DOCUMENT_PAGES: 200
+    volumes:
+      - document-index:/app/.data
     ports:
       - "8000:8000"
 
@@ -25,3 +30,6 @@ services:
         condition: service_healthy
     ports:
       - "8501:8501"
+
+volumes:
+  document-index:

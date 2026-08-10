@@ -22,3 +22,14 @@ def test_settings_reject_invalid_chunk_overlap() -> None:
             chunk_size=500,
             chunk_overlap=500,
         )
+
+
+def test_settings_reject_candidate_count_smaller_than_final_count() -> None:
+    with pytest.raises(ValidationError, match="CANDIDATE_K"):
+        Settings(
+            _env_file=None,
+            openai_api_key="test-openai-api-key",
+            app_api_key="test-application-api-key",
+            top_k=4,
+            candidate_k=3,
+        )
