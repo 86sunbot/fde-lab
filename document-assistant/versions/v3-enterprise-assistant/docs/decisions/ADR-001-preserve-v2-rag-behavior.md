@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted as the V3 baseline; retrieval details later superseded by ADR-005.
 
 ## Context
 

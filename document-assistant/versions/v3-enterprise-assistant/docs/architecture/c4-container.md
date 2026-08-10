@@ -15,7 +15,12 @@
                                                                   ▼       ▼
                                                          ┌───────────┐ ┌────────────┐
                                                          │document.pdf│ │ OpenAI API │
-                                                         └───────────┘ └────────────┘
+                                                         └─────┬─────┘ └────────────┘
+                                                               │
+                                                        ┌──────▼──────┐
+                                                        │ Local index │
+                                                        │   .data/    │
+                                                        └─────────────┘
 ```
 
 ## Streamlit Frontend
@@ -38,11 +43,12 @@ Responsibilities:
 - Run the preserved RAG pipeline
 - Produce operational signals
 
-## Local PDF and In-Memory Index
+## Local PDF and Persistent Index
 
-The PDF is packaged as a deployment artifact. Its vectors are held in the API
-process. This is suitable for the one-document V3 scope but is neither durable
-nor shared between replicas.
+The PDF is packaged as a deployment artifact. The API searches vectors in
+memory and stores a fingerprinted JSON snapshot under `.data/`. Docker Compose
+mounts that directory as a named volume. This avoids re-embedding an unchanged
+document after restart, but the snapshot is not shared between replicas.
 
 ## OpenAI API
 

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "direct terminology",
+    "question": "How does Defender for Identity detect lateral movement?",
+    "expected_behavior": "grounded"
+  },
+  {
+    "name": "semantic paraphrase",
+    "question": "How can it spot an attacker spreading from one system to another?",
+    "expected_behavior": "grounded"
+  },
+  {
+    "name": "unsupported question",
+    "question": "What is the capital of India?",
+    "expected_behavior": "abstain"
+  }
+]

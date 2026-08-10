@@ -13,8 +13,10 @@ Document Assistant
     ├── Concurrency Semaphore
     ├── Document Processor
     ├── OpenAI Provider
-    ├── In-Memory Vector Store
-    ├── Semantic Retriever
+    ├── Local Persistent Vector Store
+    ├── Semantic Candidate Retriever
+    ├── Deterministic Reranker
+    ├── Evidence Threshold
     └── Grounded Prompt Builder
     ↓
 Validated HTTP Response
@@ -38,16 +40,24 @@ before using it as a limiter identifier, and applies a sliding request window.
 ## Observability
 
 `app.observability` creates request IDs, structured JSON logs, latency tracking,
-and per-process counters. Request bodies, prompts, document text, and secrets are
-not logged.
+per-process counters, and privacy-safe retrieval traces. Request bodies, prompts,
+document text, and secrets are not logged.
 
 ## RAG Services
 
-- `document` extracts and chunks PDF text using the V2 algorithm.
+- `document` extracts PDF text, fingerprints the source, and creates bounded,
+  overlapping chunks that prefer paragraph and sentence boundaries.
 - `openai_provider` isolates external API operations and errors.
-- `vector_store` retains V2's transparent cosine-similarity search.
-- `rag` initializes the index, retrieves evidence, builds the grounded prompt,
-  and generates an answer.
+- `vector_store` performs transparent cosine-similarity search and persists a
+  fingerprinted local snapshot.
+- `reranker` combines semantic similarity with a small lexical signal.
+- `rag` restores or initializes the index, retrieves candidates, reranks
+  evidence, applies the evidence threshold, builds the grounded prompt, and
+  generates an answer.
+
+Document search remains an internal controlled operation. It is not exposed to
+the model as a function tool because every question must follow the same single
+search path.
 
 ## Frontend
 

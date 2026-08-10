@@ -26,6 +26,8 @@ Edit `.env`:
 
 - Set `OPENAI_API_KEY` to the OpenAI credential.
 - Set `APP_API_KEY` to the newly generated application key.
+- Keep `MAX_DOCUMENT_BYTES` and `MAX_DOCUMENT_PAGES` appropriate for the
+  deployment's memory, latency, and OpenAI-cost budget.
 - Do not commit `.env`.
 
 ## Start Locally
@@ -37,9 +39,11 @@ source .venv/bin/activate
 python3 -m uvicorn app.main:create_app --factory --reload --reload-dir app
 ```
 
-Normal startup logs include `document_index_initializing` followed by
-`document_index_ready`. The first startup creates document embeddings and uses
-OpenAI API credits.
+Normal startup logs include `document_index_initializing` followed by either
+`document_index_persisted` on a cache miss or `document_index_restored` on a
+cache hit, and finally `document_index_ready`. The first startup creates
+document embeddings and uses OpenAI API credits. An unchanged restart restores
+the local snapshot without creating the document embeddings again.
 
 Terminal 2:
 
@@ -75,6 +79,19 @@ python3 -m ruff check .
 python3 -m pytest
 ```
 
+With the backend running, load `.env` and run the three-case live evaluation:
+
+```bash
+set -a
+source .env
+set +a
+python3 scripts/evaluate.py
+```
+
+The supported cases use OpenAI credits. The unsupported case should be rejected
+before answer generation when its best similarity is below the configured
+threshold.
+
 ## Start With Docker
 
 Docker Compose automatically reads `.env` for variable interpolation:
@@ -94,7 +111,21 @@ docker compose down
 ### Configuration validation error
 
 Check `.env`. Both keys must be replaced, `APP_API_KEY` must be at least 16
-characters, and chunk overlap must be smaller than chunk size.
+characters, chunk overlap must be smaller than chunk size, and `CANDIDATE_K`
+must be greater than or equal to `TOP_K`.
+
+### Persistent index appears stale or corrupt
+
+The index signature normally invalidates snapshots after document, embedding
+model, or chunk-setting changes. To force a rebuild, stop the API and remove
+only the configured snapshot:
+
+```bash
+rm .data/document-index.json
+```
+
+Restart the API. The next startup creates embeddings and persists a fresh
+snapshot.
 
 ### API startup fails before becoming ready
 
@@ -102,6 +133,7 @@ Likely causes:
 
 - `document.pdf` is missing or unreadable
 - PDF has no extractable text
+- PDF exceeds `MAX_DOCUMENT_BYTES` or `MAX_DOCUMENT_PAGES`
 - OpenAI key or credits are invalid
 - Configured model is unavailable
 - Network access to OpenAI failed
@@ -145,6 +177,10 @@ Inspect returned sources:
 
 Do not treat similarity as answer confidence.
 
+The `retrieval_completed` JSON log records candidate and selected chunk numbers,
+similarity scores, the evidence decision, and retrieval duration. It deliberately
+does not contain the question or source text.
+
 ## Operational Checks
 
 - `/health` returns `200` when the API process is alive.
@@ -155,9 +191,11 @@ Do not treat similarity as answer confidence.
 
 ## Recovery
 
-The index is in memory. Restarting the API reconstructs it and makes another
-embedding request. If repeated indexing becomes costly or slow, persistence is
-a measured requirement for a future ADR.
+The live search index remains in memory, while `.data/document-index.json`
+provides restart persistence. If the snapshot is unavailable or invalid, the API
+reconstructs it from the configured PDF and OpenAI embeddings. In Compose, the
+`document-index` named volume retains the snapshot across container recreation;
+`docker compose down -v` intentionally removes it.
 
 ## Deployment Boundary
 

@@ -15,6 +15,7 @@ app/main.py
  └── services/rag.py
        ├── services/document.py
        ├── services/vector_store.py
+       ├── services/reranker.py
        └── services/openai_provider.py ──► OpenAI SDK
 ```
 
@@ -30,7 +31,8 @@ app/main.py
 | `MetricsCollector` | Track lightweight operational counters |
 | `DocumentAssistant` | Coordinate initialization, retrieval, and generation |
 | `OpenAIProvider` | Isolate embedding and Responses API calls |
-| `InMemoryVectorStore` | Store and rank chunks by vector similarity |
+| `InMemoryVectorStore` | Search in memory and persist/restore a local index snapshot |
+| `rerank()` | Reduce semantic candidates to the final evidence set |
 | `build_prompt()` | Create the grounded RAG prompt |
 
 ## Dependency Rule

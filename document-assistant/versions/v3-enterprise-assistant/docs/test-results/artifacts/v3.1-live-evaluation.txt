@@ -1,0 +1,5 @@
+PASS | direct terminology | grounded with citations
+PASS | semantic paraphrase | grounded with citations
+PASS | unsupported question | abstained
+
+3/3 evaluation cases passed
