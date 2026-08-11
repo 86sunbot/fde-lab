@@ -81,8 +81,14 @@ architecture views, ADRs, runbook, and validation evidence.
 1. Read the V1 README and its retrieval validation results.
 2. Compare the V1 results with V2's semantic-retrieval validation.
 3. Read V2's semantic-retrieval ADR and inspect its visible RAG pipeline.
-4. Read V3's C4 views and engineering principles.
-5. Review V3's automated and live validation evidence.
+4. Start V3 at its
+   [documentation home](versions/v3-enterprise-assistant/docs/README.md).
+5. Follow the beginner concepts, then zoom through the C4 views and request lifecycle.
+6. Review V3's engineering principles, automated tests, live evaluation, and stored
+   evidence.
+7. Use the
+   [reuse blueprint](versions/v3-enterprise-assistant/docs/reuse-blueprint.md) to separate
+   transferable engineering foundations from domain-specific choices.
 
 This order makes each new technology answer a limitation that is already
 visible in the previous version.
@@ -99,4 +105,6 @@ concrete requirements before they are introduced.
 
 API keys belong only in ignored `.env` files or process environment variables.
 Never place real credentials in source code, `.env.example`, screenshots, test
-artifacts, or commits.
+artifacts, or commits. Before publishing, also confirm that every tracked PDF and
+screenshot is permitted and contains no private information. See the
+[V3 security guide](versions/v3-enterprise-assistant/docs/security.md).
