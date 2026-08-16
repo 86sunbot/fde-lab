@@ -1,0 +1,16 @@
+.env
+.DS_Store
+.venv/
+.venv-*/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+generated-rules/*.json
+!generated-rules/.gitkeep
+generated-rules/deployment-input/
+web/node_modules/
+web/.wrangler/
+web/dist/
+
+*.egg-info/
