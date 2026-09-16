@@ -66,3 +66,13 @@ The final version is intentionally production-oriented, not a claim of
 unlimited scale. It demonstrates engineering principles in one small deployment.
 Distributed infrastructure should be introduced only when real traffic,
 identity, persistence, or availability requirements justify it.
+
+## Reuse Lesson
+
+The most reusable outcome is not the sample PDF or one model choice. It is the pattern of
+validated boundaries, isolated external clients, evidence-first behavior, resource
+controls, observability, proof, and evolving documentation. Each future project must still
+replace domain data, evaluation cases, security assumptions, and deployment decisions.
+
+The detailed separation is recorded in the
+[V3 reuse blueprint](../versions/v3-enterprise-assistant/docs/reuse-blueprint.md).

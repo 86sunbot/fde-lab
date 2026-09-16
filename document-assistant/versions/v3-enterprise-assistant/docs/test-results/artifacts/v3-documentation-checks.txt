@@ -1,0 +1,25 @@
+Version 3 documentation validation
+Date: 2026-08-10
+Product version: 3.1.0
+Baseline commit: 6d305d5
+Python: 3.9.6
+
+Command: .venv/bin/python3 -m ruff check .
+Result: PASS
+Output: All checks passed!
+
+Command: .venv/bin/python3 -m pytest -q
+Result: PASS
+Output: 36 passed
+
+Command: git diff --check
+Result: PASS
+Output: no whitespace errors
+
+Command: docker compose config --quiet
+Result: NOT RUN
+Output: docker command is not installed in this execution environment
+
+Documentation-specific pytest coverage:
+- required flagship documentation files exist
+- local Markdown and image links resolve

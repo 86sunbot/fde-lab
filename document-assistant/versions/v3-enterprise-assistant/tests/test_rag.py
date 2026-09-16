@@ -1,3 +1,4 @@
+import asyncio
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -146,3 +147,61 @@ async def test_document_assistant_abstains_before_generation_for_weak_evidence(
 
     assert result.answer == rag_module.INSUFFICIENT_EVIDENCE_ANSWER
     assert provider.generation_calls == 0
+
+
+@pytest.mark.asyncio
+async def test_document_assistant_limits_concurrent_question_work(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(rag_module, "load_pdf", lambda *_: "Identity security evidence.")
+    monkeypatch.setattr(rag_module, "document_fingerprint", lambda *_: "document-hash")
+
+    class ConcurrencyTrackingProvider(FakeProvider):
+        def __init__(self) -> None:
+            super().__init__()
+            self.block_question_embeddings = False
+            self.active_question_embeddings = 0
+            self.maximum_active_question_embeddings = 0
+            self.first_question_started = asyncio.Event()
+            self.release_questions = asyncio.Event()
+
+        async def embed_texts(self, texts: Sequence[str]) -> list[list[float]]:
+            if self.block_question_embeddings:
+                self.active_question_embeddings += 1
+                self.maximum_active_question_embeddings = max(
+                    self.maximum_active_question_embeddings,
+                    self.active_question_embeddings,
+                )
+                self.first_question_started.set()
+                await self.release_questions.wait()
+                self.active_question_embeddings -= 1
+            return [[1.0, 0.0] for _ in texts]
+
+    settings = Settings(
+        _env_file=None,
+        environment="test",
+        openai_api_key="test-openai-api-key",
+        app_api_key="test-application-api-key",
+        document_path=Path("does-not-need-to-exist.pdf"),
+        vector_store_path=tmp_path / "index.json",
+        top_k=1,
+        candidate_k=1,
+        max_concurrent_questions=1,
+    )
+    provider = ConcurrencyTrackingProvider()
+    assistant = DocumentAssistant(settings, provider=provider)
+    await assistant.initialize()
+    provider.block_question_embeddings = True
+
+    first = asyncio.create_task(assistant.answer("First supported question"))
+    await provider.first_question_started.wait()
+    second = asyncio.create_task(assistant.answer("Second supported question"))
+    await asyncio.sleep(0)
+
+    assert provider.maximum_active_question_embeddings == 1
+
+    provider.release_questions.set()
+    await asyncio.gather(first, second)
+
+    assert provider.maximum_active_question_embeddings == 1
