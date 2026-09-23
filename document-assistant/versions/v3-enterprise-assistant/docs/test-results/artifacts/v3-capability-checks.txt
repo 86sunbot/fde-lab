@@ -1,0 +1,28 @@
+Validation date: 2026-08-10
+
+Static and automated checks
+---------------------------
+Ruff: PASS
+Pytest: PASS (34 tests)
+
+Live API checks
+---------------
+health: HTTP 200; version 3.1.0
+readiness: HTTP 200; document.pdf; 10 indexed chunks
+missing authentication: HTTP 401
+strict request validation: HTTP 422
+authenticated metrics: HTTP 200
+request correlation: X-Request-ID present
+
+Live RAG evaluation
+-------------------
+PASS | direct terminology | grounded with citations
+PASS | semantic paraphrase | grounded with citations
+PASS | unsupported question | abstained
+
+3/3 evaluation cases passed
+
+Deliberate boundary
+-------------------
+Model function calling is not implemented. One mandatory document-search path
+does not create a model routing decision.
