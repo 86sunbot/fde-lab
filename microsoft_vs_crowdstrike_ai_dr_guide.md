@@ -1,5 +1,5 @@
 # The Enterprise Guide to AI-Driven Detection and Response (AI/DR)
-## Microsoft Security vs CrowdStrike Falcon: Technical Benchmark, Architecture & Competitive Guide
+## Microsoft Security vs CrowdStrike Falcon: Technical Architecture Comparison & Competitive Guide
 
 **Document Version:** 2.0 (Publication Edition)  
 **Baseline Date:** September 2026  
@@ -93,26 +93,26 @@ graph TD
 Microsoft organizes AI security around the tools enterprises already use for identity, data, and devices:
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph Users_And_Agents ["1. Who is acting?"]
         Employees["Human Employees"]
         Agents["AI Agents (Copilot, Foundry, Local CLI)"]
     end
 
     subgraph Identity_Control ["2. Identity Check (Microsoft Entra)"]
-        Entra["Entra ID & Entra Agent ID<br/>• Verifies Identity<br/>• Checks Human Sponsor<br/>• Evaluates Conditional Access"]
+        Entra["Entra ID & Entra Agent ID: Verifies Identity, Checks Human Sponsor, Evaluates Conditional Access"]
     end
 
     subgraph Data_Protection ["3. Data Check (Microsoft Purview)"]
-        Purview["Microsoft Purview<br/>• Checks Data Sensitivity Labels<br/>• Blocks Sensitive Text Paste (DLP)<br/>• Monitors Overshared Files"]
+        Purview["Microsoft Purview: Checks Data Sensitivity Labels, Blocks Sensitive Text Paste (DLP), Monitors Overshared Files"]
     end
 
     subgraph Runtime_Defense ["4. Threat & Tool Check (Defender)"]
-        Defender["Microsoft Defender XDR<br/>• Prompt Shields (Blocks Jailbreaks)<br/>• Real-Time Tool Blocking (BehaviorInfo)<br/>• Advanced Hunting (AgentsInfo)"]
+        Defender["Microsoft Defender XDR: Prompt Shields, Real-Time Tool Blocking (BehaviorInfo), Advanced Hunting (AgentsInfo)"]
     end
 
     subgraph Operations ["5. SOC Investigation (Security Copilot)"]
-        SecCopilot["Security Copilot & Sentinel<br/>• Correlates Alerts into Incidents<br/>• Natural Language Triage<br/>• Automated Remediation"]
+        SecCopilot["Security Copilot & Sentinel: Correlates Alerts into Incidents, Natural Language Triage, Automated Remediation"]
     end
 
     Employees --> Entra
@@ -139,21 +139,21 @@ graph TD
 CrowdStrike builds its AI defense directly on top of its market-leading endpoint sensor and cloud platform:
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph Endpoint_Sensor ["1. The Falcon Sensor (Kernel & Process Level)"]
         Host["Managed Laptop / Cloud Server"]
-        Guardian["Falcon Guardian<br/>• Intercepts Agent Prompts & Tools<br/>• Counts Input/Output Tokens<br/>• Stops Dangerous Actions in Memory"]
-        Sensor["Falcon Sensor Core<br/>• Behavioral IOAs<br/>• Real-Time Threat Prevention"]
+        Guardian["Falcon Guardian: Intercepts Agent Prompts & Tools, Counts Input/Output Tokens, Stops Dangerous Actions in Memory"]
+        Sensor["Falcon Sensor Core: Behavioral IOAs and Real-Time Threat Prevention"]
     end
 
     subgraph Cloud_Platform ["2. Falcon Cloud Security & Data Security"]
-        FCS["Falcon Cloud Security (AI-SPM)<br/>• Finds Cloud AI Models & Misconfigurations"]
-        FDS["Falcon Data Security<br/>• Monitors File & Data Movement"]
-        AIDR["Falcon AIDR<br/>• Gateway Prompt/Response Scanning"]
+        FCS["Falcon Cloud Security (AI-SPM): Finds Cloud AI Models & Misconfigurations"]
+        FDS["Falcon Data Security: Monitors File & Data Movement"]
+        AIDR["Falcon AIDR: Gateway Prompt/Response Scanning"]
     end
 
     subgraph SOC_Layer ["3. Charlotte AI & AgentWorks"]
-        Charlotte["Charlotte AI & AgentWorks<br/>• Fast Incident Triage<br/>• No-Code Custom Security Agents<br/>• Agentic SOAR Automation"]
+        Charlotte["Charlotte AI & AgentWorks: Fast Incident Triage, No-Code Custom Security Agents, Agentic SOAR Automation"]
     end
 
     Host --> Guardian
@@ -213,21 +213,21 @@ sequenceDiagram
 An **AI agent** is software that uses an LLM to take actions on its own—like reading an email, querying a database, writing code, or calling an API. Because agents take actions automatically, they pose a new security challenge: **they act like non-human employees**.
 
 ```mermaid
-graph LR
+flowchart LR
     subgraph Step1 ["1. Discovery"]
-        D["Find all agents:<br/>• Copilot Studio<br/>• Azure Foundry<br/>• Local CLI (Claude Code)"]
+        D["Find all agents: Copilot Studio, Azure Foundry, Local CLI (Claude Code)"]
     end
 
     subgraph Step2 ["2. Identity & Sponsor"]
-        I["Assign to Entra Agent ID:<br/>• Unique Service Principal<br/>• Mandatory Human Owner<br/>• Conditional Access"]
+        I["Assign to Entra Agent ID: Unique Service Principal, Mandatory Human Owner, Conditional Access"]
     end
 
     subgraph Step3 ["3. Least Privilege"]
-        P["Limit Permissions:<br/>• Restrict Graph Scopes<br/>• Restrict Database Access<br/>• Limit MCP Server Tools"]
+        P["Limit Permissions: Restrict Graph Scopes, Restrict Database Access, Limit MCP Server Tools"]
     end
 
     subgraph Step4 ["4. Runtime Guardrails"]
-        R["Watch Agent Execution:<br/>• Defender BehaviorInfo<br/>• Falcon Guardian<br/>• Block Unsafe Calls"]
+        R["Watch Agent Execution: Defender BehaviorInfo, Falcon Guardian, Block Unsafe Calls"]
     end
 
     D --> I
@@ -255,17 +255,17 @@ If an agent uses a shared administrative password or broad access rights, any at
 A common point of confusion is **token monitoring**. To evaluate this clearly, separate **FinOps (money and quotas)** from **SecOps (threats and abuse)**:
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph Input_Telemetry ["Raw AI Activity"]
         Prompts["User Prompts & Agent Actions"]
     end
 
     subgraph FinOps_Stream ["Stream A: FinOps (Cost & Quotas)"]
-        Cost["Azure Cost Management & APIM<br/>• Measures token volume per department<br/>• Enforces hourly/monthly token limits<br/>• Returns HTTP 429 when quota exceeded<br/>• Managed by IT & Finance"]
+        Cost["Azure Cost Management & APIM: Measures token volume, enforces hourly/monthly token limits, returns HTTP 429 on quota breach"]
     end
 
     subgraph SecOps_Stream ["Stream B: SecOps (Threat Detection)"]
-        Threat["Sentinel & Falcon Guardian<br/>• Detects stolen API keys<br/>• Flags sudden 500% token surges<br/>• Stops Denial-of-Wallet attacks<br/>• Managed by the Security Operations Center"]
+        Threat["Sentinel & Falcon Guardian: Detects stolen API keys, flags sudden token surges, stops Denial-of-Wallet attacks"]
     end
 
     Prompts --> Cost
@@ -361,22 +361,23 @@ graph TD
 An objective comparison should avoid declaring a single "winner." Both platforms have clear architectural advantages:
 
 ```mermaid
-quadrantChart
-    title Capability Profile: Microsoft vs CrowdStrike
-    x-axis "Narrower Context Scope" --> "Broad Identity & Data Context"
-    y-axis "Higher Sensor / Portal Overhead" --> "Lightweight Sensor & Speed"
-    quadrant-1 "Ideal Balanced Enterprise State"
-    quadrant-2 "CrowdStrike Core Strengths"
-    quadrant-3 "Industry Gaps (Unsolved)"
-    quadrant-4 "Microsoft Core Strengths"
-    "CrowdStrike Falcon Sensor / IOAs": [0.25, 0.90]
-    "CrowdStrike Falcon Guardian": [0.38, 0.85]
-    "CrowdStrike Charlotte AI (SOC Speed)": [0.35, 0.78]
-    "Microsoft Agent 365 & Entra Agent ID": [0.92, 0.42]
-    "Microsoft Purview In-Browser DLP": [0.90, 0.38]
-    "Microsoft 365 Copilot Native Controls": [0.95, 0.40]
-    "Microsoft Defender XDR Incident Fusion": [0.82, 0.65]
-    "Cross-Cloud Autonomous Agent Mesh": [0.20, 0.20]
+flowchart TD
+    subgraph MS_Strengths ["Microsoft Security Core Strengths (Broad Identity, SaaS & Data Context)"]
+        M1["Microsoft Agent 365 & Entra Agent ID (Directory Identity & Human Sponsor)"]
+        M2["Microsoft Purview In-Browser DLP & DSPM for AI (DOM Paste Blocking & Audit)"]
+        M3["Microsoft 365 Copilot Controls & Azure APIM Token Quotas"]
+        M4["Microsoft Defender XDR & Sentinel Cross-Domain Incident Fusion"]
+    end
+
+    subgraph CS_Strengths ["CrowdStrike Falcon Core Strengths (Single Sensor & Host Execution Speed)"]
+        C1["Falcon Sensor & Behavioral IOAs (Low-Overhead Kernel/Host Prevention)"]
+        C2["Falcon Guardian (OS-Level Agent Command & Token Interception)"]
+        C3["Charlotte AI & AgentWorks (Fast Endpoint Triage & Visual Agent Builder)"]
+    end
+
+    subgraph Shared_Gaps ["Industry-Wide Open Challenges"]
+        G1["Real-Time Latent Model Introspection & Cross-Cloud Multi-Agent Mesh Governance"]
+    end
 ```
 
 ### Where Microsoft Holds an Advantage:
@@ -390,7 +391,7 @@ quadrantChart
 1. **Single Sensor Architecture:** The Falcon Sensor is a single, lightweight kernel/user-mode binary with low CPU footprint (<1-2%) and zero reboot requirements.
 2. **Kernel-Level Prevention Speed:** CrowdStrike’s behavioral Indicators of Attack (IOAs) provide fast, sensor-level prevention against in-memory exploits and living-off-the-land attacks.
 3. **Operational Simplicity:** A single, unified console (`falcon.crowdstrike.com`) reduces administrative complexity compared to navigating multiple Microsoft administrative portals.
-4. **Elite Threat Intelligence & Managed Hunting:** CrowdStrike Counter Adversary Operations (Falcon OverWatch) provides world-renowned human-led threat hunting and adversary attribution.
+4. **Adversary Threat Intelligence & Managed Hunting:** CrowdStrike Counter Adversary Operations (Falcon OverWatch) provides dedicated human-led threat hunting and adversary attribution.
 
 ### Gaps Neither Vendor Fully Solves Today:
 * **Neural Network "Black Box" Introspection:** Neither vendor can mathematically inspect the internal latent reasoning space of an LLM in real-time to guarantee prevention of subtle logical manipulation.
@@ -423,21 +424,20 @@ quadrantChart
 ## 12. The 30 / 60 / 90-Day Implementation Roadmap
 
 ```mermaid
-gantt
-    title 30 / 60 / 90-Day AI Security Implementation Plan
-    dateFormat  YYYY-MM-DD
-    section Month 1: Discovery & Basics
-    Discover Shadow AI (MDA + MDE)           :m1_1, 2026-10-01, 10d
-    Turn on Basic Purview AI Hub             :m1_2, after m1_1, 10d
-    Review M365 Copilot Permissions          :m1_3, after m1_2, 10d
-    section Month 2: Protection & Identity
-    Deploy Browser Prompt DLP (Edge/Chrome)  :m2_1, 2026-11-01, 10d
-    Register Agents in Entra Agent ID        :m2_2, after m2_1, 10d
-    Turn on Defender AI Agent Protection     :m2_3, after m2_2, 10d
-    section Month 3: SecOps & Scale
-    Configure Token Limits in Azure APIM     :m3_1, 2026-12-01, 10d
-    Deploy Sentinel AI Detection Rules       :m3_2, after m3_1, 10d
-    Run Red-Team Attack Simulations          :m3_3, after m3_2, 10d
+flowchart LR
+    subgraph M1 ["Days 1-30: Discovery & Visibility"]
+        A1["1. Discover Shadow AI (MDA + MDE)"] --> A2["2. Enable Purview AI Hub"] --> A3["3. Audit M365 Copilot Permissions"]
+    end
+
+    subgraph M2 ["Days 31-60: Protection & Identity"]
+        B1["4. Deploy Browser Prompt DLP (Edge/Chrome)"] --> B2["5. Register Agents in Entra Agent ID"] --> B3["6. Enable Defender AI Agent Protection"]
+    end
+
+    subgraph M3 ["Days 61-90: SecOps & Scale"]
+        C1["7. Configure Token Quotas in Azure APIM"] --> C2["8. Deploy Sentinel AI Detection Rules"] --> C3["9. Run Red-Team Simulations"]
+    end
+
+    M1 --> M2 --> M3
 ```
 
 ### Days 1–30: Discovery and Visibility
