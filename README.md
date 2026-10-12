@@ -23,20 +23,25 @@ This public repository hosts three Forward Deployed Engineering (FDE) and cybers
 ```mermaid
 flowchart TD
     subgraph Arch ["1. Enterprise AI/DR Architecture Comparison"]
+        direction LR
         A1["microsoft_vs_crowdstrike_ai_dr_guide.md: Defender XDR + Sentinel + Entra Agent ID vs. Falcon + Next-Gen SIEM + Guardian"]
     end
 
     subgraph RAG ["2. Document Assistant v3 (FastAPI + Streamlit)"]
+        direction LR
         R1["Streamlit UI / Client"] -->|"Bearer API Key + Sliding-Window Rate Limit"| R2["FastAPI Boundary (app/security.py & app/main.py)"]
         R2 --> R3["Vector Retrieval, Lexical Reranker & Grounded Citation Engine"]
     end
 
     subgraph SentinelV1 ["3. Sentinel Use-Case Deployment v1 (Governed Agent Workflow)"]
+        direction LR
         S1["Natural-Language Request"] --> S2["Proposer (OpenAIRuleProposer or ReferencePasswordSprayProposer)"]
         S2 --> S3["RuleValidator (structural.py & detection.py) + Single-Pass Repair"]
         S3 --> S4["Human Approval Gate (ApprovalDecision.APPROVE)"]
         S4 --> S5["UseCaseWorkflow.deploy & PowerShellCsvDeploymentGateway (Re-validates + enforces enabled = false)"]
     end
+
+    Arch --> RAG --> SentinelV1
 ```
 
 ---
