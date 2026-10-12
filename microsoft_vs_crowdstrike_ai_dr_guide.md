@@ -1,5 +1,5 @@
 # The Enterprise Guide to AI-Driven Detection and Response (AI/DR)
-## Microsoft Security vs CrowdStrike Falcon: Technical Benchmark, Architecture & Competitive Guide
+## Microsoft Security vs CrowdStrike Falcon: Technical Architecture Comparison & Competitive Guide
 
 **Document Version:** 2.0 (Publication Edition)  
 **Baseline Date:** September 2026  
